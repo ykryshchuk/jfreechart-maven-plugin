@@ -1,0 +1,16 @@
+# File containing test data for chart generating
+
+Statistics for 1990 - boys 23, girls 20
+Statistics for 1991 - boys 19, girls 22
+Statistics for 1992 - boys 25, girls 24
+Statistics for 1993 - boys 21, girls 18
+
+# The data for other 4 years is missing
+Statistics for 1998 - boys 29, girls 26
+Statistics for 1999 - boys 26, girls 27
+
+# Next one is damaged or just wrong
+Statistics for - boys, girls
+
+Statistics for 2000 - boys 32, girls 35
+Statistics for 2001 - boys 33, girls 33

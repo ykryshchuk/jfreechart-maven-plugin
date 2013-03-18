@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.kryshchuk.maven.plugins.it</groupId>
+  <artifactId>jfreechart-it</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <description>A simple IT verifying the basic use case.</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>@project.groupId@</groupId>
+        <artifactId>@project.artifactId@</artifactId>
+        <version>@project.version@</version>
+        <executions>
+          <!--execution>
+            <id>validate-chart1</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>text-file-line-chart</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.reporting.outputDirectory}/set1</outputDirectory>
+              <filesets>
+                <fileset>
+                  <directory>src/main/data</directory>
+                  <includes>
+                    <include>*.txt</include>
+                  </includes>
+                </fileset>
+                <fileset>
+                  <directory>src/main/data</directory>
+                  <includes>
+                    <include>subdir/*.log</include>
+                  </includes>
+                  <excludes>
+                    <exclude>*/other.*</exclude>
+                  </excludes>
+                </fileset>
+              </filesets>
+              <width>700</width>
+              <height>200</height>
+              <title>DATAX</title>
+              <regexp>OUT:(\\d+)</regexp>
+            </configuration>
+          </execution-->
+          <execution>
+            <id>validate-chart2</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>text-file-line-chart</goal>
+            </goals>
+            <configuration>
+              <data>src/main/data/subdir/other.log</data>
+              <outputDirectory>${project.reporting.outputDirectory}/set2</outputDirectory>
+              <width>800</width>
+              <height>600</height>
+              <title>Girls vs. Boys</title>
+              <regexp>Statistics for (\d{4}) - boys (\d+), girls (\d+)</regexp>
+              <datasets>
+                <dataset>
+                  <axisX>
+                    <label>Year</label>
+                    <valueGroup>1</valueGroup>
+                  </axisX>
+                  <axisY>
+                    <label>Amount</label>
+                  </axisY>
+                  <series>
+                    <serie>
+                      <label>Boys</label>
+                      <valueGroup>2</valueGroup>
+                    </serie>
+                    <serie>
+                      <label>Girls</label>
+                      <valueGroup>3</valueGroup>
+                    </serie>
+                  </series>
+                </dataset>
+              </datasets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
