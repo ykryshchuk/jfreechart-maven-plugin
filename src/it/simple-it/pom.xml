@@ -64,12 +64,12 @@
               <width>800</width>
               <height>600</height>
               <title>Girls vs. Boys</title>
-              <regexp>Statistics for (\d{4}) - boys (\d+), girls (\d+)</regexp>
               <datasets>
                 <dataset>
+                  <regexp>Statistics for (\d{4}) - boys (\d+), girls (\d+)</regexp>
                   <axisX>
                     <label>Year</label>
-                    <valueGroup>1</valueGroup>
+                    <value>%1$d</value>
                   </axisX>
                   <axisY>
                     <label>Amount</label>
@@ -77,11 +77,13 @@
                   <series>
                     <serie>
                       <label>Boys</label>
-                      <valueGroup>2</valueGroup>
+                      <value>%2$d</value>
+                      <color>BLUE</color>
                     </serie>
                     <serie>
                       <label>Girls</label>
-                      <valueGroup>3</valueGroup>
+                      <value>%3$d</value>
+                      <color>pink</color>
                     </serie>
                   </series>
                 </dataset>
