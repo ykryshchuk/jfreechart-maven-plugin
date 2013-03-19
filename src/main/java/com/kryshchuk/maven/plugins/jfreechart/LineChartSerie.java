@@ -40,7 +40,7 @@ public class LineChartSerie extends LabeledValues {
   public void setColor(final String color) throws MojoExecutionException {
     this.color = color;
     try {
-      final Field colorField = colorClass.getDeclaredField(color);
+      final Field colorField = colorClass.getField(color);
       lineColor = (Color) colorField.get(null);
     } catch (final NoSuchFieldException e) {
       try {

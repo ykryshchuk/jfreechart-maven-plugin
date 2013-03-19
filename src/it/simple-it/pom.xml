@@ -21,7 +21,7 @@
         <artifactId>@project.artifactId@</artifactId>
         <version>@project.version@</version>
         <executions>
-          <!--execution>
+          <execution>
             <id>validate-chart1</id>
             <phase>validate</phase>
             <goals>
@@ -48,10 +48,52 @@
               </filesets>
               <width>700</width>
               <height>200</height>
-              <title>DATAX</title>
-              <regexp>OUT:(\\d+)</regexp>
+              <title>PERFORMANCE %1$s</title>
+              <datasets>
+                <dataset>
+                  <regexp>Arrived at point 1 with (\d+)ms, and point 2 with (\d+)ms latency</regexp>
+                  <axisX>
+                    <label>Measurement</label>
+                    <value>$#</value>
+                  </axisX>
+                  <axisY>
+                    <label>Latency</label>
+                    <location>BOTTOM_OR_LEFT</location>
+                  </axisY>
+                  <series>
+                    <serie>
+                      <label>Point1</label>
+                      <value>%1$d</value>
+                      <color>#AA4444</color>
+                    </serie>
+                    <serie>
+                      <label>Point2</label>
+                      <value>%2$d</value>
+                      <color>#44AA44</color>
+                    </serie>
+                  </series>
+                </dataset>
+                <dataset>
+                  <regexp>Processed (\d+) samples during last period</regexp>
+                  <axisX>
+                    <label>Measurement</label>
+                    <value>$#</value>
+                  </axisX>
+                  <axisY>
+                    <label>Samples</label>
+                    <location>TOP_OR_RIGHT</location>
+                  </axisY>
+                  <series>
+                    <serie>
+                      <label>Throughput</label>
+                      <value>%1$d</value>
+                      <color>#8888CC</color>
+                    </serie>
+                  </series>
+                </dataset>
+              </datasets>
             </configuration>
-          </execution-->
+          </execution>
           <execution>
             <id>validate-chart2</id>
             <phase>validate</phase>
@@ -70,9 +112,11 @@
                   <axisX>
                     <label>Year</label>
                     <value>%1$d</value>
+                    <format>####</format>
                   </axisX>
                   <axisY>
                     <label>Amount</label>
+                    <location>BOTTOM_OR_RIGHT</location>
                   </axisY>
                   <series>
                     <serie>

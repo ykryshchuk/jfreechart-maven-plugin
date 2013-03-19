@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -19,6 +20,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
@@ -86,7 +88,11 @@ public class TextFileLineChartMojo extends AbstractMojo {
       final SingleFileIterator i = new SingleFileIterator(data, outputDirectory);
       i.iterate(new DefaultFileSetVisitor());
     } else {
-      getLog().warn("Not yet implemented");
+      final DefaultFileSetVisitor visitor = new DefaultFileSetVisitor();
+      for (final FileSet fs : filesets) {
+        final FileSetIterator i = new FileSetIterator(fs, outputDirectory);
+        i.iterate(visitor);
+      }
     }
   }
 
@@ -129,29 +135,47 @@ public class TextFileLineChartMojo extends AbstractMojo {
 
         final XYPlot plot = new XYPlot();
         final JFreeChart chart = new JFreeChart(title, plot);
-        // final JFreeChart chart = ChartFactory.createXYLineChart(title, ds0.getAxisX().getLabel(), ds0.getAxisY()
-        // .getLabel(), ds0.getSeriesCollection(), PlotOrientation.VERTICAL, true, false, false);
 
-        for (int i = 0; i < datasets.size(); i++) {
-          final LineChartDataset ds = datasets.get(i);
-          getLog().debug("Adding dataset " + i);
-          final XYItemRenderer renderer = new StandardXYItemRenderer();
+        for (int d = 0; d < datasets.size(); d++) {
+          final LineChartDataset ds = datasets.get(d);
+          // Domain axis
+          getLog().debug("Configuring domain axis");
           final NumberAxis domainAxis = new NumberAxis(ds.getAxisX().getLabel());
           domainAxis.setAutoRangeIncludesZero(false);
-          plot.setDomainAxis(i, domainAxis);
+          plot.setDomainAxis(d, domainAxis);
+          final AxisLocation axisXLocation = ds.getAxisX().getAxisLocation();
+          if (axisXLocation != null) {
+            plot.setDomainAxisLocation(d, axisXLocation);
+          }
+          final NumberFormat axisXNumberFormat = ds.getAxisX().getNumberFormat();
+          if (axisXNumberFormat != null) {
+            domainAxis.setNumberFormatOverride(axisXNumberFormat);
+          }
+          // Range axis
+          getLog().debug("Configuring range axis");
           final NumberAxis rangeAxis = new NumberAxis(ds.getAxisY().getLabel());
+          rangeAxis.setAutoRangeIncludesZero(false);
+          plot.setRangeAxis(d, rangeAxis);
+          final AxisLocation axisYLocation = ds.getAxisY().getAxisLocation();
+          if (axisYLocation != null) {
+            plot.setRangeAxisLocation(d, axisYLocation);
+          }
+          final NumberFormat axisYNumberFormat = ds.getAxisX().getNumberFormat();
+          if (axisYNumberFormat != null) {
+            rangeAxis.setNumberFormatOverride(axisYNumberFormat);
+          }
+          // Renderer
+          final XYItemRenderer renderer = new StandardXYItemRenderer();
           for (int s = 0; s < ds.getSeries().size(); s++) {
             final Color lineColor = ds.getSeries().get(s).getLineColor();
             if (lineColor != null) {
               renderer.setSeriesPaint(s, lineColor);
             }
           }
-          rangeAxis.setAutoRangeIncludesZero(false);
-          plot.setRangeAxis(i, rangeAxis);
-          plot.setRenderer(i, renderer);
-          // xyPlot.setRangeAxisLocation(i, AxisLocation.TOP_OR_LEFT);
-          plot.setDataset(i, ds.getSeriesCollection());
-          plot.mapDatasetToRangeAxis(i, i);
+          plot.setRenderer(d, renderer);
+          getLog().debug("Completing dataset " + d);
+          plot.setDataset(d, ds.getSeriesCollection());
+          plot.mapDatasetToRangeAxis(d, d);
         }
 
         if (!outputFile.getParentFile().isDirectory()) {

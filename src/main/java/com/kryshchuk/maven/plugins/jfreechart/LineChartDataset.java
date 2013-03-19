@@ -26,10 +26,10 @@ public class LineChartDataset {
   private Pattern pattern;
 
   @Parameter(required = true)
-  private LabeledValues axisX;
+  private LineChartAxis axisX;
 
   @Parameter(required = true)
-  private LabeledValues axisY;
+  private LineChartAxis axisY;
 
   @Parameter(required = true)
   private List<LineChartSerie> series;
@@ -52,14 +52,14 @@ public class LineChartDataset {
   /**
    * @return the axisX
    */
-  public LabeledValues getAxisX() {
+  public LineChartAxis getAxisX() {
     return axisX;
   }
 
   /**
    * @return the axisY
    */
-  public LabeledValues getAxisY() {
+  public LineChartAxis getAxisY() {
     return axisY;
   }
 

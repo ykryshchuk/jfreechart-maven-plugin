@@ -1,0 +1,10 @@
+Arrived at point 1 with 1ms, and point 2 with 3ms latency
+Processed 15 samples during last period
+Arrived at point 1 with 2ms, and point 2 with 4ms latency
+Processed 17 samples during last period
+Arrived at point 1 with 2ms, and point 2 with 3ms latency
+Processed 13 samples during last period
+Arrived at point 1 with 3ms, and point 2 with 5ms latency
+Processed 14 samples during last period
+Arrived at point 1 with 2ms, and point 2 with 6ms latency
+Processed 16 samples during last period
