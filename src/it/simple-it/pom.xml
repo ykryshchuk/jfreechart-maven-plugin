@@ -52,14 +52,14 @@
               <datasets>
                 <dataset>
                   <regexp>Arrived at point 1 with (\d+)ms, and point 2 with (\d+)ms latency</regexp>
-                  <axisX>
+                  <axisDomain>
                     <label>Measurement</label>
                     <value>$#</value>
-                  </axisX>
-                  <axisY>
+                  </axisDomain>
+                  <axisRange>
                     <label>Latency</label>
                     <location>BOTTOM_OR_LEFT</location>
-                  </axisY>
+                  </axisRange>
                   <series>
                     <serie>
                       <label>Point1</label>
@@ -75,14 +75,14 @@
                 </dataset>
                 <dataset>
                   <regexp>Processed (\d+) samples during last period</regexp>
-                  <axisX>
+                  <axisDomain>
                     <label>Measurement</label>
                     <value>$#</value>
-                  </axisX>
-                  <axisY>
+                  </axisDomain>
+                  <axisRange>
                     <label>Samples</label>
                     <location>TOP_OR_RIGHT</location>
-                  </axisY>
+                  </axisRange>
                   <series>
                     <serie>
                       <label>Throughput</label>

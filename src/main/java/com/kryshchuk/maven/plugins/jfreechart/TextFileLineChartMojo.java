@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -25,6 +24,12 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+
+import com.kryshchuk.maven.plugins.jfreechart.fs.FileIterationException;
+import com.kryshchuk.maven.plugins.jfreechart.fs.FileSet;
+import com.kryshchuk.maven.plugins.jfreechart.fs.FileSetIterator;
+import com.kryshchuk.maven.plugins.jfreechart.fs.FileSetVisitor;
+import com.kryshchuk.maven.plugins.jfreechart.fs.SingleFileIterator;
 
 /**
  * Generates a line chart from a data in a plain text file. The data in a text file should follow the regular expression
@@ -84,20 +89,27 @@ public class TextFileLineChartMojo extends AbstractMojo {
     if (data == null && filesets == null) {
       throw new MojoFailureException("No data source specified for the chart");
     }
-    if (data != null) {
-      final SingleFileIterator i = new SingleFileIterator(data, outputDirectory);
-      i.iterate(new DefaultFileSetVisitor());
-    } else {
-      final DefaultFileSetVisitor visitor = new DefaultFileSetVisitor();
-      for (final FileSet fs : filesets) {
-        final FileSetIterator i = new FileSetIterator(fs, outputDirectory);
-        i.iterate(visitor);
+    try {
+      if (data != null) {
+        final SingleFileIterator i = new SingleFileIterator(data, outputDirectory);
+        i.iterate(new DefaultFileSetVisitor());
+      } else {
+        final DefaultFileSetVisitor visitor = new DefaultFileSetVisitor();
+        for (final FileSet fs : filesets) {
+          final FileSetIterator i = new FileSetIterator(fs, outputDirectory);
+          i.iterate(visitor);
+        }
       }
+    } catch (final FileIterationException e) {
+      throw new MojoExecutionException("Could not iterate files", e);
     }
   }
 
   private void readDatasets(final File inputFile) throws MojoFailureException {
     getLog().debug("Reading data file " + inputFile);
+    for (final LineChartDataset ds : datasets) {
+      ds.clear();
+    }
     try {
       final BufferedReader reader = new BufferedReader(new FileReader(inputFile));
       try {
@@ -106,7 +118,7 @@ public class TextFileLineChartMojo extends AbstractMojo {
           for (final LineChartDataset ds : datasets) {
             final Matcher m = ds.getMatcher(line);
             if (m.matches()) {
-              final Number label = ds.getAxisX().getValue(m);
+              final Number label = ds.getDomainAxis().getValue(m);
               for (final LineChartSerie serie : ds.getSeries()) {
                 serie.getSerie().add(label, serie.getValue(m));
               }
@@ -123,9 +135,9 @@ public class TextFileLineChartMojo extends AbstractMojo {
 
   private class DefaultFileSetVisitor implements FileSetVisitor {
 
-    public void visit(final File inputFile, final File outputFile) throws MojoExecutionException, MojoFailureException {
+    public void visit(final File inputFile, final File outputFile) throws FileIterationException, MojoFailureException {
       if (!inputFile.isFile()) {
-        throw new MojoExecutionException("Input file does not exist " + inputFile);
+        throw new FileIterationException("Input file does not exist " + inputFile);
       }
       if (outputFile.isFile() && outputFile.lastModified() > inputFile.lastModified()) {
         getLog().debug("Chart " + outputFile + " is up to date");
@@ -134,35 +146,31 @@ public class TextFileLineChartMojo extends AbstractMojo {
         getLog().debug("Creating chart");
 
         final XYPlot plot = new XYPlot();
-        final JFreeChart chart = new JFreeChart(title, plot);
+        final JFreeChart chart = new JFreeChart(String.format(title, inputFile.getName()), plot);
 
         for (int d = 0; d < datasets.size(); d++) {
           final LineChartDataset ds = datasets.get(d);
           // Domain axis
-          getLog().debug("Configuring domain axis");
-          final NumberAxis domainAxis = new NumberAxis(ds.getAxisX().getLabel());
-          domainAxis.setAutoRangeIncludesZero(false);
-          plot.setDomainAxis(d, domainAxis);
-          final AxisLocation axisXLocation = ds.getAxisX().getAxisLocation();
-          if (axisXLocation != null) {
-            plot.setDomainAxisLocation(d, axisXLocation);
-          }
-          final NumberFormat axisXNumberFormat = ds.getAxisX().getNumberFormat();
-          if (axisXNumberFormat != null) {
-            domainAxis.setNumberFormatOverride(axisXNumberFormat);
+          {
+            getLog().debug("Configuring domain axis");
+            final NumberAxis domainAxis = new NumberAxis(ds.getDomainAxis().getLabel());
+            plot.setDomainAxis(d, domainAxis);
+            final AxisLocation axisXLocation = ds.getDomainAxis().getAxisLocation();
+            if (axisXLocation != null) {
+              plot.setDomainAxisLocation(d, axisXLocation);
+            }
+            ds.getDomainAxis().setupAxis(domainAxis);
           }
           // Range axis
-          getLog().debug("Configuring range axis");
-          final NumberAxis rangeAxis = new NumberAxis(ds.getAxisY().getLabel());
-          rangeAxis.setAutoRangeIncludesZero(false);
-          plot.setRangeAxis(d, rangeAxis);
-          final AxisLocation axisYLocation = ds.getAxisY().getAxisLocation();
-          if (axisYLocation != null) {
-            plot.setRangeAxisLocation(d, axisYLocation);
-          }
-          final NumberFormat axisYNumberFormat = ds.getAxisX().getNumberFormat();
-          if (axisYNumberFormat != null) {
-            rangeAxis.setNumberFormatOverride(axisYNumberFormat);
+          {
+            getLog().debug("Configuring range axis");
+            final NumberAxis rangeAxis = new NumberAxis(ds.getRangeAxis().getLabel());
+            plot.setRangeAxis(d, rangeAxis);
+            final AxisLocation axisYLocation = ds.getRangeAxis().getAxisLocation();
+            if (axisYLocation != null) {
+              plot.setRangeAxisLocation(d, axisYLocation);
+            }
+            ds.getRangeAxis().setupAxis(rangeAxis);
           }
           // Renderer
           final XYItemRenderer renderer = new StandardXYItemRenderer();
@@ -180,7 +188,7 @@ public class TextFileLineChartMojo extends AbstractMojo {
 
         if (!outputFile.getParentFile().isDirectory()) {
           if (!outputFile.getParentFile().mkdirs()) {
-            throw new MojoExecutionException("Failed to create chart directory");
+            throw new MojoFailureException("Failed to create chart directory");
           } else {
             getLog().debug("Created chart directory");
           }

@@ -67,4 +67,11 @@ public class LineChartSerie extends LabeledValues {
     return lineColor;
   }
 
+  /**
+   * 
+   */
+  public void clear() {
+    getSerie().clear();
+  }
+
 }

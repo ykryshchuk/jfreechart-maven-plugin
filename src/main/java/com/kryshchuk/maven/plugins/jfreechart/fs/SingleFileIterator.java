@@ -1,11 +1,10 @@
 /**
  * 
  */
-package com.kryshchuk.maven.plugins.jfreechart;
+package com.kryshchuk.maven.plugins.jfreechart.fs;
 
 import java.io.File;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
@@ -13,17 +12,17 @@ import org.apache.maven.plugin.MojoFailureException;
  * @since ${developmentVersion}
  * 
  */
-class SingleFileIterator extends AbstractFileIterator {
+public class SingleFileIterator extends AbstractFileIterator {
 
   private final File file;
 
-  protected SingleFileIterator(final File file, final File outputDirectory) {
+  public SingleFileIterator(final File file, final File outputDirectory) {
     super(outputDirectory);
     this.file = file;
   }
 
   @Override
-  void iterate(final FileSetVisitor visitor) throws MojoExecutionException, MojoFailureException {
+  public void iterate(final FileSetVisitor visitor) throws FileIterationException, MojoFailureException {
     final File outputFile = new File(getOutputDirectory(), replaceExtension(file.getName()));
     visitor.visit(file, outputFile);
   }

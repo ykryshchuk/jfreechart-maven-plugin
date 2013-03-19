@@ -1,11 +1,10 @@
 /**
  * 
  */
-package com.kryshchuk.maven.plugins.jfreechart;
+package com.kryshchuk.maven.plugins.jfreechart.fs;
 
 import java.io.File;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
@@ -13,7 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
  * @since ${developmentVersion}
  * 
  */
-abstract class AbstractFileIterator {
+public abstract class AbstractFileIterator {
 
   private static final String EXT = ".png";
 
@@ -30,7 +29,15 @@ abstract class AbstractFileIterator {
     return outputDirectory;
   }
 
-  abstract void iterate(FileSetVisitor visitor) throws MojoExecutionException, MojoFailureException;
+  protected File getOutputDirectory(final String rel) {
+    if (rel == null || rel.isEmpty()) {
+      return getOutputDirectory();
+    } else {
+      return new File(getOutputDirectory(), rel);
+    }
+  }
+
+  abstract void iterate(FileSetVisitor visitor) throws FileIterationException, MojoFailureException;
 
   protected String replaceExtension(final String filename) {
     final int ext = filename.lastIndexOf('.');

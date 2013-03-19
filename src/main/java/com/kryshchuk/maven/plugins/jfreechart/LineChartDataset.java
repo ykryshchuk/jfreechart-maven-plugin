@@ -26,10 +26,10 @@ public class LineChartDataset {
   private Pattern pattern;
 
   @Parameter(required = true)
-  private LineChartAxis axisX;
+  private LineChartAxis axisDomain;
 
   @Parameter(required = true)
-  private LineChartAxis axisY;
+  private LineChartAxis axisRange;
 
   @Parameter(required = true)
   private List<LineChartSerie> series;
@@ -52,15 +52,15 @@ public class LineChartDataset {
   /**
    * @return the axisX
    */
-  public LineChartAxis getAxisX() {
-    return axisX;
+  public LineChartAxis getDomainAxis() {
+    return axisDomain;
   }
 
   /**
    * @return the axisY
    */
-  public LineChartAxis getAxisY() {
-    return axisY;
+  public LineChartAxis getRangeAxis() {
+    return axisRange;
   }
 
   /**
@@ -86,6 +86,14 @@ public class LineChartDataset {
    */
   public XYSeriesCollection getSeriesCollection() {
     return seriesCollection;
+  }
+
+  public void clear() {
+    for (final LineChartSerie serie : getSeries()) {
+      serie.clear();
+    }
+    getDomainAxis().clear();
+    getRangeAxis().clear();
   }
 
 }
