@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <head>
+        <title>Usage for JFreeChart Maven Plugin</title>
+    </head>
+
+    <body>
+
+        <section name="Overview">
+
+            <p>The purpose of this plugin is to generate the chart images from different
+                sources.</p>
+
+        </section>
+
+        <section name="Datasources">
+
+            <p>Chart contains the graphical representation of some statistical data. In order to
+                build the graphics plugin need access to that statistics. The data may come from
+                large number of different sources. </p>
+
+            <p><i>Currently the plugin supports plain text sources (like generated log files), that
+                    contains some statistical data in a particular format.</i></p>
+
+            <subsection name="Plain text files">
+
+                <p>Plugin may work with single data file. In this case it generates exactly one
+                    chart ffrom that file. But it may also process the set of files and generate one
+                    chart image per one input file.</p>
+
+                <p>Following are the samples of specifying the single and multiple datasource
+                    files.</p>
+
+                <pre><![CDATA[
+    <configuration>
+        <!-- Specifies single dtasource file -->
+        <data>src/main/chartdata/samples.log</data>
+        <outputDirectory>target/charts</outputDirectory>
+    </configuration>]]></pre>
+
+
+                <pre><![CDATA[
+    <configuration>
+        <!-- Set of txt files in charts directory -->
+        <filesets>
+            <fileset>
+                <directory>src/main/chartdata</directory>
+                <includes>
+                    <include>*.txt</include>
+                </includes>
+            </fileset>
+        </filesets>
+        <outputDirectory>target/charts</outputDirectory>
+    </configuration>]]></pre>
+
+                <ul>
+                    <li><a href="./text-file-line-charts.html">Generate line charts</a></li>
+                </ul>
+
+            </subsection>
+
+        </section>
+
+        <section name="Chart types">
+
+            <p>Different chart types require and support different kinds of source data.</p>
+
+            <p><i>Currently plugin provides one Mojo per combination of datasource type and chart
+                    type.</i></p>
+
+            <subsection name="Line charts">
+
+                <p>Line chart contains one or more datasets, each of those can be built from several
+                    data series.</p>
+
+                <table>
+                    <tbody>
+                        <tr>
+                            <td><img src="samples/line-chart-1.png" alt="Line Chart 1" width="100"
+                                /></td>
+                            <td><img src="samples/line-chart-2.png" alt="Line Chart 2" width="100"
+                                /></td>
+                            <td><img src="samples/line-chart-3.png" alt="Line Chart 3" width="100"
+                                /></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <ul>
+                    <li><a href="./text-file-line-charts.html">Build from text file</a></li>
+                </ul>
+
+            </subsection>
+
+        </section>
+
+    </body>
+
+</document>
