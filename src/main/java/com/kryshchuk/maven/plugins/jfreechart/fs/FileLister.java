@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author yura
@@ -30,31 +31,50 @@ public class FileLister extends PathFilter implements FileFilter {
   }
 
   public boolean accept(final File file) {
-    if (getIncludes() != null) {
-      if (!isIncludesAny()) {
-        if (!match(file, getIncludes())) {
+    if (!isIncludesAny()) {
+      if (getIncludes() != null) {
+        if (!match(file, getIncludes(), false)) {
           return false;
         }
       }
     }
+    if (isExcludesAny()) {
+      return false;
+    }
     if (getExcludes() != null) {
-      if (match(file, getExcludes())) {
+      if (match(file, getExcludes(), true)) {
         return false;
       }
     }
     return true;
   }
 
-  private boolean match(final File file, final List<String> paths) {
+  protected static boolean match(final File file, final List<String> paths, final boolean firstLevel) {
     for (final String path : paths) {
-      final String fname = file.getName();
-      if (fname.equals(path)) {
+      if (match(file, path, firstLevel)) {
         return true;
-      } else {
-        // TODO
       }
     }
     return false;
+  }
+
+  protected static boolean match(final File file, final String path, final boolean firstLevel) {
+    final String fname = file.getName();
+    if (fname.equals(path) || "*".equals(path) || "**".equals(path)) {
+      return true;
+    } else {
+      final int pathSeparator = path.indexOf('/');
+      if (pathSeparator > 0) {
+        if (!firstLevel && file.isDirectory()) {
+          return match(file, path.substring(0, pathSeparator), true);
+        } else {
+          return false;
+        }
+      } else {
+        final String pathRegexp = path.replace(".", "\\.").replace('?', '.').replace("*", ".*");
+        return Pattern.matches(pathRegexp, fname);
+      }
+    }
   }
 
   /**

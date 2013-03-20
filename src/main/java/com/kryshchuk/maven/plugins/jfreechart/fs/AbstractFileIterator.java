@@ -37,7 +37,7 @@ public abstract class AbstractFileIterator {
     }
   }
 
-  abstract void iterate(FileSetVisitor visitor) throws FileIterationException, MojoFailureException;
+  abstract void iterate(FileVisitor visitor) throws FilesIterationException, MojoFailureException;
 
   protected String replaceExtension(final String filename) {
     final int ext = filename.lastIndexOf('.');

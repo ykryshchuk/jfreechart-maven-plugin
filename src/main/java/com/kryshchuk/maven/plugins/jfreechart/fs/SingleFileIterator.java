@@ -22,7 +22,7 @@ public class SingleFileIterator extends AbstractFileIterator {
   }
 
   @Override
-  public void iterate(final FileSetVisitor visitor) throws FileIterationException, MojoFailureException {
+  public void iterate(final FileVisitor visitor) throws FilesIterationException, MojoFailureException {
     final File outputFile = new File(getOutputDirectory(), replaceExtension(file.getName()));
     visitor.visit(file, outputFile);
   }

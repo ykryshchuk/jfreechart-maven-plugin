@@ -22,6 +22,8 @@ public abstract class PathFilter {
 
   private boolean includesAny;
 
+  private boolean excludesAny;
+
   /**
    * @return the includes
    */
@@ -42,10 +44,12 @@ public abstract class PathFilter {
    */
   protected void setIncludes(final List<String> includes) {
     this.includes = includes;
-    for (final String inc : includes) {
-      if ("**".equals(inc) || "*".equals(inc)) {
-        includesAny = true;
-        break;
+    if (includes != null) {
+      for (final String inc : includes) {
+        if ("**".equals(inc) || "*".equals(inc)) {
+          includesAny = true;
+          break;
+        }
       }
     }
   }
@@ -56,6 +60,14 @@ public abstract class PathFilter {
    */
   protected void setExcludes(final List<String> excludes) {
     this.excludes = excludes;
+    if (excludes != null) {
+      for (final String exc : excludes) {
+        if ("**".equals(exc) || "*".equals(exc)) {
+          excludesAny = true;
+          break;
+        }
+      }
+    }
   }
 
   /**
@@ -63,6 +75,25 @@ public abstract class PathFilter {
    */
   protected boolean isIncludesAny() {
     return includesAny;
+  }
+
+  /**
+   * @return the excludesAny
+   */
+  protected boolean isExcludesAny() {
+    return excludesAny;
+  }
+
+  @Override
+  public String toString() {
+    final StringBuilder str = new StringBuilder();
+    if (includes != null) {
+      str.append("includes=").append(includes).append(" ");
+    }
+    if (excludes != null) {
+      str.append("excludes=").append(excludes).append(" ");
+    }
+    return str.toString();
   }
 
 }

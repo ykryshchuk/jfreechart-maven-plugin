@@ -96,4 +96,16 @@ public class LineChartDataset {
     getRangeAxis().clear();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    final StringBuilder str = new StringBuilder("Line Chart Dataset: ");
+    str.append("regexp={").append(regexp).append("} ");
+    return str.toString();
+  }
+
 }

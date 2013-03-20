@@ -8,18 +8,18 @@ package com.kryshchuk.maven.plugins.jfreechart.fs;
  * @since ${developmentVersion}
  * 
  */
-public class FileIterationException extends Exception {
+public class FilesIterationException extends Exception {
 
   /**
    * 
    */
   private static final long serialVersionUID = 1L;
 
-  public FileIterationException(final String message) {
+  public FilesIterationException(final String message) {
     super(message);
   }
 
-  public FileIterationException(final String message, final Throwable cause) {
+  public FilesIterationException(final String message, final Throwable cause) {
     super(message, cause);
   }
 

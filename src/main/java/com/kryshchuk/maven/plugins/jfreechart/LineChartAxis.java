@@ -7,10 +7,11 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
+
+import com.kryshchuk.maven.plugins.jfreechart.fs.VisitorException;
 
 /**
  * @author yura
@@ -35,7 +36,7 @@ public class LineChartAxis extends LabeledValues {
   /**
    * @return the axisLocation
    */
-  public AxisLocation getAxisLocation() throws MojoFailureException {
+  public AxisLocation getAxisLocation() throws VisitorException {
     if (location == null) {
       return null;
     } else {
@@ -43,9 +44,9 @@ public class LineChartAxis extends LabeledValues {
         final Field axisLocationField = AxisLocation.class.getField(location);
         return (AxisLocation) axisLocationField.get(null);
       } catch (final NoSuchFieldException e) {
-        throw new MojoFailureException("Invalid axis location " + location, e);
+        throw new VisitorException("Invalid axis location " + location, e);
       } catch (final IllegalAccessException e) {
-        throw new MojoFailureException("Could not get location", e);
+        throw new VisitorException("Could not get location", e);
       }
     }
   }
@@ -85,4 +86,21 @@ public class LineChartAxis extends LabeledValues {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    final StringBuilder str = new StringBuilder("Line Chart Axis: ");
+    str.append(super.toString());
+    if (location != null) {
+      str.append("location=").append(location).append(" ");
+    }
+    if (format != null) {
+      str.append("format=").append(format).append(" ");
+    }
+    return str.toString();
+  }
 }

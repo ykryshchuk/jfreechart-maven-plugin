@@ -25,11 +25,12 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
-import com.kryshchuk.maven.plugins.jfreechart.fs.FileIterationException;
 import com.kryshchuk.maven.plugins.jfreechart.fs.FileSet;
 import com.kryshchuk.maven.plugins.jfreechart.fs.FileSetIterator;
-import com.kryshchuk.maven.plugins.jfreechart.fs.FileSetVisitor;
+import com.kryshchuk.maven.plugins.jfreechart.fs.FileVisitor;
+import com.kryshchuk.maven.plugins.jfreechart.fs.FilesIterationException;
 import com.kryshchuk.maven.plugins.jfreechart.fs.SingleFileIterator;
+import com.kryshchuk.maven.plugins.jfreechart.fs.VisitorException;
 
 /**
  * Generates a line chart from a data in a plain text file. The data in a text file should follow the regular expression
@@ -100,12 +101,12 @@ public class TextFileLineChartMojo extends AbstractMojo {
           i.iterate(visitor);
         }
       }
-    } catch (final FileIterationException e) {
+    } catch (final FilesIterationException e) {
       throw new MojoExecutionException("Could not iterate files", e);
     }
   }
 
-  private void readDatasets(final File inputFile) throws MojoFailureException {
+  private void readDatasets(final File inputFile) throws VisitorException {
     getLog().debug("Reading data file " + inputFile);
     for (final LineChartDataset ds : datasets) {
       ds.clear();
@@ -129,19 +130,20 @@ public class TextFileLineChartMojo extends AbstractMojo {
         reader.close();
       }
     } catch (final IOException e) {
-      throw new MojoFailureException("Failed to read data file", e);
+      throw new VisitorException("Failed to read data file", e);
     }
   }
 
-  private class DefaultFileSetVisitor implements FileSetVisitor {
+  private class DefaultFileSetVisitor implements FileVisitor {
 
-    public void visit(final File inputFile, final File outputFile) throws FileIterationException, MojoFailureException {
+    public void visit(final File inputFile, final File outputFile) throws VisitorException {
       if (!inputFile.isFile()) {
-        throw new FileIterationException("Input file does not exist " + inputFile);
+        throw new VisitorException("Input file does not exist " + inputFile);
       }
       if (outputFile.isFile() && outputFile.lastModified() > inputFile.lastModified()) {
         getLog().debug("Chart " + outputFile + " is up to date");
       } else {
+        final long startTime = System.nanoTime();
         readDatasets(inputFile);
         getLog().debug("Creating chart");
 
@@ -188,16 +190,17 @@ public class TextFileLineChartMojo extends AbstractMojo {
 
         if (!outputFile.getParentFile().isDirectory()) {
           if (!outputFile.getParentFile().mkdirs()) {
-            throw new MojoFailureException("Failed to create chart directory");
+            throw new VisitorException("Failed to create chart directory");
           } else {
             getLog().debug("Created chart directory");
           }
         }
         try {
           ChartUtilities.saveChartAsPNG(outputFile, chart, width, height);
-          getLog().info("Chart saved " + outputFile);
+          final long execTime = System.nanoTime() - startTime;
+          getLog().info("Chart generated within " + execTime + " ns, saved to " + outputFile);
         } catch (final IOException e) {
-          throw new MojoFailureException("Could not store chart image", e);
+          throw new VisitorException("Could not store chart image", e);
         }
       }
     }

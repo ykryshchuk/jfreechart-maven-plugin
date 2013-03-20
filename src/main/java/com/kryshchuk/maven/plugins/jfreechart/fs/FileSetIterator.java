@@ -4,7 +4,6 @@
 package com.kryshchuk.maven.plugins.jfreechart.fs;
 
 import java.io.File;
-import java.io.FileFilter;
 
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -23,15 +22,14 @@ public class FileSetIterator extends AbstractFileIterator {
   }
 
   @Override
-  public void iterate(final FileSetVisitor visitor) throws FileIterationException, MojoFailureException {
+  public void iterate(final FileVisitor visitor) throws FilesIterationException, MojoFailureException {
     iterate(fileset.getDirectory(), new FileLister(fileset), visitor);
   }
 
-  private void iterate(final File dir, final FileLister fileLister, final FileSetVisitor visitor)
-      throws FileIterationException, MojoFailureException {
+  private void iterate(final File dir, final FileLister fileLister, final FileVisitor visitor)
+      throws FilesIterationException, MojoFailureException {
     final File outDir = getOutputDirectory(fileLister.getRelativePath());
-    final FileFilter filter = null;
-    final File[] list = dir.listFiles(filter);
+    final File[] list = dir.listFiles(fileLister);
     for (final File file : list) {
       if (file.isDirectory()) {
         final FileLister nestedFileLister = fileLister.getFileLister(file);

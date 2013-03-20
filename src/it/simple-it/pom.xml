@@ -46,8 +46,8 @@
                   </excludes>
                 </fileset>
               </filesets>
-              <width>700</width>
-              <height>200</height>
+              <width>900</width>
+              <height>600</height>
               <title>PERFORMANCE %1$s</title>
               <datasets>
                 <dataset>
@@ -109,15 +109,15 @@
               <datasets>
                 <dataset>
                   <regexp>Statistics for (\d{4}) - boys (\d+), girls (\d+)</regexp>
-                  <axisX>
+                  <axisDomain>
                     <label>Year</label>
                     <value>%1$d</value>
                     <format>####</format>
-                  </axisX>
-                  <axisY>
+                  </axisDomain>
+                  <axisRange>
                     <label>Amount</label>
                     <location>BOTTOM_OR_RIGHT</location>
-                  </axisY>
+                  </axisRange>
                   <series>
                     <serie>
                       <label>Boys</label>

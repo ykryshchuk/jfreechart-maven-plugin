@@ -76,4 +76,19 @@ public class LabeledValues {
     throw new IllegalStateException("Cannot determine the value");
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    final StringBuilder str = new StringBuilder();
+    str.append("label=").append(label).append(" ");
+    if (value != null) {
+      str.append("value=").append(value).append(" ");
+    }
+    return str.toString();
+  }
+
 }

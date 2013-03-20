@@ -19,6 +19,36 @@ import org.testng.annotations.Test;
 public class FileListerTest {
 
   @Test
+  public void verifyDirMatchesWithString() {
+    final File dir = Mockito.spy(new File("/tmp/mydir"));
+    Mockito.doReturn(true).when(dir).isDirectory();
+    Assert.assertTrue(FileLister.match(dir, "**", false));
+    Assert.assertTrue(FileLister.match(dir, "**/file", false));
+    Assert.assertTrue(FileLister.match(dir, "*", false));
+    Assert.assertTrue(FileLister.match(dir, "*/*/file", false));
+    Assert.assertFalse(FileLister.match(dir, "*/*/file", true));
+    Assert.assertTrue(FileLister.match(dir, "mydir", false));
+    Assert.assertTrue(FileLister.match(dir, "mydir/subdir", false));
+    Assert.assertFalse(FileLister.match(dir, "mydib/subdir", false));
+    Assert.assertTrue(FileLister.match(dir, "my?ir", false));
+    Assert.assertTrue(FileLister.match(dir, "*dir", false));
+    Assert.assertTrue(FileLister.match(dir, "my*", false));
+  }
+
+  @Test
+  public void verifyFileMatchesWithString() {
+    final File f = new File("/tmp/mydir/file.ext");
+    Assert.assertTrue(FileLister.match(f, "**", false));
+    Assert.assertFalse(FileLister.match(f, "**/file.ext", false));
+    Assert.assertTrue(FileLister.match(f, "*", false));
+    Assert.assertFalse(FileLister.match(f, "*/file.ext", false));
+    Assert.assertTrue(FileLister.match(f, "file.ext", false));
+    Assert.assertFalse(FileLister.match(f, "mydir/file.ext", false));
+    Assert.assertFalse(FileLister.match(f, "fille.ext", false));
+    Assert.assertFalse(FileLister.match(f, "file.exxt", false));
+  }
+
+  @Test
   public void verifyConstructorWithPathFilter() {
     final PathFilter pathFilter = Mockito.mock(PathFilter.class);
     Mockito.doReturn(Arrays.asList("a", "b", "c")).when(pathFilter).getIncludes();

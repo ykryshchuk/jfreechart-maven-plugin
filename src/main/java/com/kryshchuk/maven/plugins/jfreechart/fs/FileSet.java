@@ -7,7 +7,6 @@ import java.io.File;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
-
 /**
  * @author yura
  * @since ${developmentVersion}
@@ -26,6 +25,22 @@ public class FileSet extends PathFilter {
    */
   public File getDirectory() {
     return directory;
+  }
+
+  /**
+   * @param directory
+   *          the directory to set
+   */
+  protected void setDirectory(final File directory) {
+    this.directory = directory;
+  }
+
+  @Override
+  public String toString() {
+    final StringBuilder str = new StringBuilder("File set: ");
+    str.append("directory=").append(directory).append(" ");
+    str.append(super.toString());
+    return str.toString();
   }
 
 }
