@@ -10,7 +10,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class LabeledValues {

@@ -9,7 +9,6 @@ import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class FileSetIterator extends AbstractFileIterator {

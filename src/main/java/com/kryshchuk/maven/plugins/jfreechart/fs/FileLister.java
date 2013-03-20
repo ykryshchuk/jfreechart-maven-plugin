@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class FileLister extends PathFilter implements FileFilter {

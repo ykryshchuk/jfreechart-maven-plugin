@@ -15,7 +15,6 @@ import com.kryshchuk.maven.plugins.jfreechart.fs.VisitorException;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class LineChartAxis extends LabeledValues {

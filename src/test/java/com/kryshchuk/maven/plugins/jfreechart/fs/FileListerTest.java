@@ -13,7 +13,6 @@ import org.testng.annotations.Test;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class FileListerTest {

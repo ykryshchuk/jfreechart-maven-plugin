@@ -12,7 +12,6 @@ import org.jfree.data.xy.XYSeries;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class LineChartSerie extends LabeledValues {

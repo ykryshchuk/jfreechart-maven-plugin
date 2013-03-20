@@ -12,7 +12,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public class LineChartDataset {

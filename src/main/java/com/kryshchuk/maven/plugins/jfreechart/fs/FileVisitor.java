@@ -7,7 +7,6 @@ import java.io.File;
 
 /**
  * @author yura
- * @since ${developmentVersion}
  * 
  */
 public interface FileVisitor {
