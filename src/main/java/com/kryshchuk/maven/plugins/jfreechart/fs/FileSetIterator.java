@@ -8,8 +8,9 @@ import java.io.File;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * <p>FileSetIterator class.</p>
+ *
  * @author yura
- * 
  */
 public class FileSetIterator extends AbstractFileIterator {
 

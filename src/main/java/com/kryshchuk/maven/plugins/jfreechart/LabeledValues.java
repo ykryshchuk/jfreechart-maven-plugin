@@ -9,8 +9,9 @@ import java.util.regex.Matcher;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
+ * <p>LabeledValues class.</p>
+ *
  * @author yura
- * 
  */
 public class LabeledValues {
 

@@ -10,13 +10,20 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @author yura
+ * <p>
+ * FileLister class.
+ * </p>
  * 
+ * @author yura
  */
 public class FileLister extends PathFilter implements FileFilter {
 
   private final String relativePath;
 
+  /**
+   * 
+   * @param pathFilter
+   */
   public FileLister(final PathFilter pathFilter) {
     if (pathFilter != null) {
       setIncludes(pathFilter.getIncludes());

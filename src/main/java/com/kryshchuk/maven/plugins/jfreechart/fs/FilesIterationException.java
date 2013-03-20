@@ -4,8 +4,9 @@
 package com.kryshchuk.maven.plugins.jfreechart.fs;
 
 /**
+ * <p>FilesIterationException class.</p>
+ *
  * @author yura
- * 
  */
 public class FilesIterationException extends Exception {
 

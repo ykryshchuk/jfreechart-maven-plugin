@@ -8,8 +8,9 @@ import java.io.File;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
+ * <p>FileSet class.</p>
+ *
  * @author yura
- * 
  */
 public class FileSet extends PathFilter {
 

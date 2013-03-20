@@ -6,8 +6,9 @@ package com.kryshchuk.maven.plugins.jfreechart.fs;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * <p>VisitorException class.</p>
+ *
  * @author yura
- * 
  */
 public class VisitorException extends MojoFailureException {
 

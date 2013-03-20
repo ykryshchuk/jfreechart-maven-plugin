@@ -8,8 +8,9 @@ import java.io.File;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * <p>SingleFileIterator class.</p>
+ *
  * @author yura
- * 
  */
 public class SingleFileIterator extends AbstractFileIterator {
 

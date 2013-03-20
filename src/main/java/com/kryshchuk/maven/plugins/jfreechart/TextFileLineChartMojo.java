@@ -37,7 +37,6 @@ import com.kryshchuk.maven.plugins.jfreechart.fs.VisitorException;
  * pattern. Every pattern may provide the format for several chart data series.
  * 
  * @author yura
- * 
  */
 @Mojo(name = "text-file-line-chart", defaultPhase = LifecyclePhase.PRE_SITE, threadSafe = true)
 public class TextFileLineChartMojo extends AbstractMojo {

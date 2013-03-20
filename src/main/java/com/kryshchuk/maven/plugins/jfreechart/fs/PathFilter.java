@@ -8,8 +8,9 @@ import java.util.List;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
+ * <p>Abstract PathFilter class.</p>
+ *
  * @author yura
- * 
  */
 public abstract class PathFilter {
 

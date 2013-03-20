@@ -72,7 +72,11 @@
                   <goal>fix</goal>
                 </goals>
                 <configuration>
+                  <force>true</force>
                   <fixTags>since</fixTags>
+                  <fixClassComment>true</fixClassComment>
+                  <fixMethodComment>true</fixMethodComment>
+                  <fixFieldComment>false</fixFieldComment>
                   <level>package</level>
                   <ignoreClirr>true</ignoreClirr>
                 </configuration>

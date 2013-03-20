@@ -11,8 +11,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.data.xy.XYSeries;
 
 /**
+ * <p>LineChartSerie class.</p>
+ *
  * @author yura
- * 
  */
 public class LineChartSerie extends LabeledValues {
 
