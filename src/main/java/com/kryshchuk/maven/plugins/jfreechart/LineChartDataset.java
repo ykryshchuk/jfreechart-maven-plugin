@@ -11,8 +11,10 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- * <p>LineChartDataset class.</p>
- *
+ * <p>
+ * LineChartDataset class.
+ * </p>
+ * 
  * @author yura
  */
 public class LineChartDataset {
@@ -36,6 +38,8 @@ public class LineChartDataset {
 
   private final XYSeriesCollection seriesCollection = new XYSeriesCollection();
 
+  private int sequence;
+
   /**
    * @param regexp
    *          the regexp to set
@@ -47,6 +51,15 @@ public class LineChartDataset {
 
   public Matcher getMatcher(final String line) {
     return pattern.matcher(line);
+  }
+
+  public Number getDomainValue(final LineChartAxis defaultDomainAxis, final Matcher m) {
+    final LineChartAxis domainAxis = getDomainAxis() == null ? defaultDomainAxis : getDomainAxis();
+    if (domainAxis.isSequence()) {
+      return Integer.valueOf(++sequence);
+    } else {
+      return domainAxis.getValue(m);
+    }
   }
 
   /**
@@ -92,13 +105,11 @@ public class LineChartDataset {
     for (final LineChartSerie serie : getSeries()) {
       serie.clear();
     }
-    getDomainAxis().clear();
-    getRangeAxis().clear();
+    sequence = 0;
   }
 
   /*
    * (non-Javadoc)
-   * 
    * @see java.lang.Object#toString()
    */
   @Override

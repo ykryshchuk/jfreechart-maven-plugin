@@ -5,17 +5,15 @@ package com.kryshchuk.maven.plugins.jfreechart;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
-import java.util.regex.Matcher;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.NumberAxis;
 
-import com.kryshchuk.maven.plugins.jfreechart.fs.VisitorException;
-
 /**
- * <p>LineChartAxis class.</p>
- *
+ * LineChartAxis class.
+ * 
  * @author yura
  */
 public class LineChartAxis extends LabeledValues {
@@ -28,46 +26,53 @@ public class LineChartAxis extends LabeledValues {
   @Parameter(required = false)
   private String location;
 
+  private AxisLocation axisLocation;
+
   @Parameter(required = false)
   private String format;
 
-  private int sequence;
+  private boolean sequence;
+
+  /**
+   * @param location
+   *          the location to set
+   */
+  public void setLocation(final String location) throws MojoExecutionException {
+    this.location = location;
+    if (location != null) {
+      try {
+        final Field axisLocationField = AxisLocation.class.getField(location);
+        axisLocation = (AxisLocation) axisLocationField.get(null);
+      } catch (final NoSuchFieldException e) {
+        throw new MojoExecutionException("Invalid axis location " + location, e);
+      } catch (final IllegalAccessException e) {
+        throw new MojoExecutionException("Could not get location", e);
+      }
+    }
+  }
 
   /**
    * @return the axisLocation
    */
-  public AxisLocation getAxisLocation() throws VisitorException {
-    if (location == null) {
-      return null;
-    } else {
-      try {
-        final Field axisLocationField = AxisLocation.class.getField(location);
-        return (AxisLocation) axisLocationField.get(null);
-      } catch (final NoSuchFieldException e) {
-        throw new VisitorException("Invalid axis location " + location, e);
-      } catch (final IllegalAccessException e) {
-        throw new VisitorException("Could not get location", e);
-      }
-    }
+  public AxisLocation getAxisLocation() {
+    return axisLocation;
   }
 
   @Override
   public void setValue(final String value) {
     super.setValue(value);
     if ("$#".equals(value)) {
-      sequence = 0;
+      sequence = true;
     } else {
-      sequence = -1;
+      sequence = false;
     }
   }
 
-  @Override
-  public Number getValue(final Matcher m) {
-    if (sequence >= 0) {
-      return Integer.valueOf(++sequence);
-    } else {
-      return super.getValue(m);
-    }
+  /**
+   * @return the sequence
+   */
+  public boolean isSequence() {
+    return sequence;
   }
 
   public void setupAxis(final NumberAxis axis) {
@@ -75,20 +80,11 @@ public class LineChartAxis extends LabeledValues {
       axis.setNumberFormatOverride(new DecimalFormat(format));
     }
     axis.setAutoRangeIncludesZero(false);
-  }
-
-  /**
-   * 
-   */
-  public void clear() {
-    if (sequence >= 0) {
-      sequence = 0;
-    }
+    // axis.setStandardTickUnits(new StandardTickUnitSource());
   }
 
   /*
    * (non-Javadoc)
-   * 
    * @see java.lang.Object#toString()
    */
   @Override

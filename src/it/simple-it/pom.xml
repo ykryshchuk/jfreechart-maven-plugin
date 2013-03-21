@@ -49,13 +49,13 @@
               <width>900</width>
               <height>600</height>
               <title>PERFORMANCE %1$s</title>
+              <axisDomain>
+                <label>Measurement</label>
+                <value>$#</value>
+              </axisDomain>
               <datasets>
                 <dataset>
                   <regexp>Arrived at point 1 with (\d+)ms, and point 2 with (\d+)ms latency</regexp>
-                  <axisDomain>
-                    <label>Measurement</label>
-                    <value>$#</value>
-                  </axisDomain>
                   <axisRange>
                     <label>Latency</label>
                     <location>BOTTOM_OR_LEFT</location>
@@ -75,10 +75,6 @@
                 </dataset>
                 <dataset>
                   <regexp>Processed (\d+) samples during last period</regexp>
-                  <axisDomain>
-                    <label>Measurement</label>
-                    <value>$#</value>
-                  </axisDomain>
                   <axisRange>
                     <label>Samples</label>
                     <location>TOP_OR_RIGHT</location>
