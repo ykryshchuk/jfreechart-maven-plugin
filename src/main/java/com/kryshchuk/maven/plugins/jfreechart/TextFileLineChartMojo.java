@@ -25,10 +25,10 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 
+import com.kryshchuk.maven.plugins.filevisitor.AbstractFileVisitor;
 import com.kryshchuk.maven.plugins.filevisitor.FileMapper;
 import com.kryshchuk.maven.plugins.filevisitor.FileSet;
 import com.kryshchuk.maven.plugins.filevisitor.FileSetIterator;
-import com.kryshchuk.maven.plugins.filevisitor.FileVisitor;
 import com.kryshchuk.maven.plugins.filevisitor.ReplaceExtensionFileMapper;
 import com.kryshchuk.maven.plugins.filevisitor.SingleFileIterator;
 import com.kryshchuk.maven.plugins.filevisitor.VisitorException;
@@ -137,107 +137,102 @@ public class TextFileLineChartMojo extends AbstractMojo {
     }
   }
 
-  private class DefaultFileSetVisitor implements FileVisitor {
+  private class DefaultFileSetVisitor extends AbstractFileVisitor {
 
-    public void visit(final File inputFile, final File outputFile) throws VisitorException {
-      if (!inputFile.isFile()) {
-        throw new VisitorException("Input file does not exist " + inputFile);
+    @Override
+    protected boolean shouldOverwrite(final File inputFile, final File outputFile) {
+      return false;
+    }
+
+    @Override
+    protected void handleFile(final File inputFile, final File outputFile) throws VisitorException {
+      final long startTime = System.nanoTime();
+      try {
+        readDatasets(inputFile);
+      } catch (final IOException e) {
+        throw new VisitorException("Failed to read data file", e);
       }
-      if (outputFile.isFile() && outputFile.lastModified() > inputFile.lastModified()) {
-        getLog().debug("Chart " + outputFile + " is up to date");
-      } else {
-        final long startTime = System.nanoTime();
-        try {
-          readDatasets(inputFile);
-        } catch (final IOException e) {
-          throw new VisitorException("Failed to read data file", e);
+      final long readTime = System.nanoTime();
+      getLog().debug("Datasets read from " + inputFile + " in " + (readTime - startTime) + " ns");
+
+      final XYPlot plot = new XYPlot();
+      final JFreeChart chart = new JFreeChart(String.format(title, inputFile.getName()), plot);
+
+      if (axisDomain != null) {
+        getLog().debug("Configuring default domain axis");
+        final NumberAxis domainAxis = new NumberAxis(axisDomain.getLabel());
+        plot.setDomainAxis(domainAxis);
+        final AxisLocation axisXLocation = axisDomain.getAxisLocation();
+        if (axisXLocation != null) {
+          plot.setDomainAxisLocation(axisXLocation);
         }
-        getLog().debug("Creating chart");
+        axisDomain.setupAxis(domainAxis);
+      }
 
-        final XYPlot plot = new XYPlot();
-        final JFreeChart chart = new JFreeChart(String.format(title, inputFile.getName()), plot);
+      if (axisRange != null) {
+        getLog().debug("Configuring default range axis");
+        final NumberAxis rangeAxis = new NumberAxis(axisRange.getLabel());
+        plot.setRangeAxis(rangeAxis);
+        final AxisLocation axisYLocation = axisRange.getAxisLocation();
+        if (axisYLocation != null) {
+          plot.setRangeAxisLocation(axisYLocation);
+        }
+        axisRange.setupAxis(rangeAxis);
+      }
 
-        if (axisDomain != null) {
-          getLog().debug("Configuring default domain axis");
-          final NumberAxis domainAxis = new NumberAxis(axisDomain.getLabel());
-          plot.setDomainAxis(domainAxis);
-          final AxisLocation axisXLocation = axisDomain.getAxisLocation();
+      for (int d = 0; d < datasets.size(); d++) {
+        final LineChartDataset ds = datasets.get(d);
+        // Domain axis
+        if (ds.getDomainAxis() != null) {
+          getLog().debug("Configuring domain axis");
+          final NumberAxis domainAxis = new NumberAxis(ds.getDomainAxis().getLabel());
+          plot.setDomainAxis(d, domainAxis);
+          final AxisLocation axisXLocation = ds.getDomainAxis().getAxisLocation();
           if (axisXLocation != null) {
-            plot.setDomainAxisLocation(axisXLocation);
+            plot.setDomainAxisLocation(d, axisXLocation);
           }
-          axisDomain.setupAxis(domainAxis);
+          ds.getDomainAxis().setupAxis(domainAxis);
         }
-
-        if (axisRange != null) {
-          getLog().debug("Configuring default range axis");
-          final NumberAxis rangeAxis = new NumberAxis(axisRange.getLabel());
-          plot.setRangeAxis(rangeAxis);
-          final AxisLocation axisYLocation = axisRange.getAxisLocation();
+        // Range axis
+        if (ds.getRangeAxis() != null) {
+          getLog().debug("Configuring range axis");
+          final NumberAxis rangeAxis = new NumberAxis(ds.getRangeAxis().getLabel());
+          plot.setRangeAxis(d, rangeAxis);
+          final AxisLocation axisYLocation = ds.getRangeAxis().getAxisLocation();
           if (axisYLocation != null) {
-            plot.setRangeAxisLocation(axisYLocation);
+            plot.setRangeAxisLocation(d, axisYLocation);
           }
-          axisRange.setupAxis(rangeAxis);
+          ds.getRangeAxis().setupAxis(rangeAxis);
         }
+        // Renderer
+        final XYItemRenderer renderer = new StandardXYItemRenderer();
+        for (int s = 0; s < ds.getSeries().size(); s++) {
+          final Color lineColor = ds.getSeries().get(s).getLineColor();
+          if (lineColor != null) {
+            renderer.setSeriesPaint(s, lineColor);
+          }
+        }
+        plot.setRenderer(d, renderer);
+        getLog().debug("Completing dataset " + d);
+        plot.setDataset(d, ds.getSeriesCollection());
+        if (ds.getDomainAxis() != null) {
+          plot.mapDatasetToDomainAxis(d, d);
+        }
+        if (ds.getRangeAxis() != null) {
+          plot.mapDatasetToRangeAxis(d, d);
+        }
+      }
 
-        for (int d = 0; d < datasets.size(); d++) {
-          final LineChartDataset ds = datasets.get(d);
-          // Domain axis
-          if (ds.getDomainAxis() != null) {
-            getLog().debug("Configuring domain axis");
-            final NumberAxis domainAxis = new NumberAxis(ds.getDomainAxis().getLabel());
-            plot.setDomainAxis(d, domainAxis);
-            final AxisLocation axisXLocation = ds.getDomainAxis().getAxisLocation();
-            if (axisXLocation != null) {
-              plot.setDomainAxisLocation(d, axisXLocation);
-            }
-            ds.getDomainAxis().setupAxis(domainAxis);
-          }
-          // Range axis
-          if (ds.getRangeAxis() != null) {
-            getLog().debug("Configuring range axis");
-            final NumberAxis rangeAxis = new NumberAxis(ds.getRangeAxis().getLabel());
-            plot.setRangeAxis(d, rangeAxis);
-            final AxisLocation axisYLocation = ds.getRangeAxis().getAxisLocation();
-            if (axisYLocation != null) {
-              plot.setRangeAxisLocation(d, axisYLocation);
-            }
-            ds.getRangeAxis().setupAxis(rangeAxis);
-          }
-          // Renderer
-          final XYItemRenderer renderer = new StandardXYItemRenderer();
-          for (int s = 0; s < ds.getSeries().size(); s++) {
-            final Color lineColor = ds.getSeries().get(s).getLineColor();
-            if (lineColor != null) {
-              renderer.setSeriesPaint(s, lineColor);
-            }
-          }
-          plot.setRenderer(d, renderer);
-          getLog().debug("Completing dataset " + d);
-          plot.setDataset(d, ds.getSeriesCollection());
-          if (ds.getDomainAxis() != null) {
-            plot.mapDatasetToDomainAxis(d, d);
-          }
-          if (ds.getRangeAxis() != null) {
-            plot.mapDatasetToRangeAxis(d, d);
-          }
-        }
-
-        if (!outputFile.getParentFile().isDirectory()) {
-          if (!outputFile.getParentFile().mkdirs()) {
-            throw new VisitorException("Failed to create chart directory");
-          } else {
-            getLog().debug("Created chart directory");
-          }
-        }
-        try {
-          ChartUtilities.saveChartAsPNG(outputFile, chart, width, height);
-          final long execTime = System.nanoTime() - startTime;
-          getLog().info("Chart generated within " + execTime + " ns, saved to " + outputFile);
-        } catch (final IOException e) {
-          throw new VisitorException("Could not store chart image", e);
-        }
+      verifyParentDirectory(outputFile);
+      try {
+        ChartUtilities.saveChartAsPNG(outputFile, chart, width, height);
+        final long execTime = System.nanoTime() - startTime;
+        getLog().info("Chart generated within " + execTime + " ns, saved to " + outputFile);
+      } catch (final IOException e) {
+        throw new VisitorException("Could not store chart image", e);
       }
     }
+
   }
 
 }
