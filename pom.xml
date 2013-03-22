@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jfreechart-maven-plugin</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.1</version>
   <packaging>maven-plugin</packaging>
 
   <name>Maven JFreeChart Plugin</name>
@@ -24,7 +24,7 @@
     <connection>scm:git:git://github.com/ykryshchuk/jfreechart-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:ykryshchuk/jfreechart-maven-plugin.git</developerConnection>
     <url>git@github.com:ykryshchuk/jfreechart-maven-plugin.git</url>
-    <tag>HEAD</tag>
+    <tag>jfreechart-maven-plugin-1.1.1</tag>
   </scm>
 
   <distributionManagement>
