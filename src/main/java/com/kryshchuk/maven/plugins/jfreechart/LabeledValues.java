@@ -9,8 +9,10 @@ import java.util.regex.Matcher;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * <p>LabeledValues class.</p>
- *
+ * <p>
+ * LabeledValues class.
+ * </p>
+ * 
  * @author yura
  */
 public class LabeledValues {
@@ -76,11 +78,6 @@ public class LabeledValues {
     throw new IllegalStateException("Cannot determine the value");
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final StringBuilder str = new StringBuilder();

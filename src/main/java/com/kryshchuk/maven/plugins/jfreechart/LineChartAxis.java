@@ -43,10 +43,8 @@ public class LineChartAxis extends LabeledValues {
       try {
         final Field axisLocationField = AxisLocation.class.getField(location);
         axisLocation = (AxisLocation) axisLocationField.get(null);
-      } catch (final NoSuchFieldException e) {
+      } catch (final NoSuchFieldException | IllegalAccessException e) {
         throw new MojoExecutionException("Invalid axis location " + location, e);
-      } catch (final IllegalAccessException e) {
-        throw new MojoExecutionException("Could not get location", e);
       }
     }
   }
@@ -83,10 +81,6 @@ public class LineChartAxis extends LabeledValues {
     // axis.setStandardTickUnits(new StandardTickUnitSource());
   }
 
-  /*
-   * (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final StringBuilder str = new StringBuilder("Line Chart Axis: ");

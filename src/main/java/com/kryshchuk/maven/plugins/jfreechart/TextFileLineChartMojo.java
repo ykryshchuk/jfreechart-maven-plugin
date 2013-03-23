@@ -90,6 +90,7 @@ public class TextFileLineChartMojo extends AbstractMojo {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     // Check whether some data has been provided
     if (data == null && filesets == null) {
@@ -118,8 +119,7 @@ public class TextFileLineChartMojo extends AbstractMojo {
     for (final LineChartDataset ds : datasets) {
       ds.clear();
     }
-    final BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-    try {
+    try (final BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
       String line;
       while ((line = reader.readLine()) != null) {
         for (final LineChartDataset ds : datasets) {
@@ -132,8 +132,6 @@ public class TextFileLineChartMojo extends AbstractMojo {
           }
         }
       }
-    } finally {
-      reader.close();
     }
   }
 

@@ -11,9 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.jfree.data.xy.XYSeriesCollection;
 
 /**
- * <p>
  * LineChartDataset class.
- * </p>
  * 
  * @author yura
  */
@@ -108,10 +106,6 @@ public class LineChartDataset {
     sequence = 0;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final StringBuilder str = new StringBuilder("Line Chart Dataset: ");
