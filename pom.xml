@@ -5,14 +5,14 @@
   <parent>
     <groupId>com.kryshchuk.maven.plugins</groupId>
     <artifactId>plugin-base</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.3</version>
   </parent>
 
   <artifactId>jfreechart-maven-plugin</artifactId>
   <version>1.1.3-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>Maven JFreeChart Plugin</name>
+  <name>JFreeChart Maven Plugin</name>
 
   <description> This plugin integrates chart generation into the build process. </description>
 
