@@ -38,6 +38,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import com.kryshchuk.maven.plugins.filevisitor.AbstractFileVisitor;
 import com.kryshchuk.maven.plugins.filevisitor.FileMapper;
@@ -106,6 +107,7 @@ public class TextFileLineChartMojo extends AbstractMojo {
    */
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
+    StaticLoggerBinder.getSingleton().setLog(getLog());
     // Check whether some data has been provided
     if (data == null && filesets == null) {
       throw new MojoFailureException("No data source specified for the chart");
